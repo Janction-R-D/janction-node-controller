@@ -6,7 +6,7 @@ start_time: "2024-07-01"
 machine_id: 1
 
 url:
-  janction_backend: "http://127.0.0.1:9767/api/point/v1"
+  janction_backend: "http://127.0.0.1:8767/api/v1"
 
 log:
   level: "debug"
