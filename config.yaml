@@ -1,0 +1,26 @@
+name: "Janction Controller"
+mode: "dev"
+port: 8767
+version: "v1.0.0"
+start_time: "2024-07-01"
+machine_id: 1
+
+url:
+  janction_backend: "http://127.0.0.1:9767/api/point/v1"
+
+log:
+  level: "debug"
+  filename: "web_app.log"
+  max_size: 200
+  max_age: 30
+  max_backups: 7
+
+postgres:
+  host: "127.0.0.1"
+  port: "5432"
+  user: ""
+  password: ""
+  dbname: "janction"
+  schema: "public"
+  max_open_conns: 200
+  max_idle_conns: 50
