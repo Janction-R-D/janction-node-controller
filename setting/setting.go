@@ -16,18 +16,12 @@ type AppConfig struct {
 	MachineID int64  `mapstructure:"machine_id"`
 
 	UrlConfig      *UrlConfig      `mapstructure:"url"`
-	AuthConfig     *AuthConfig     `mapstructure:"auth"`
 	LogConfig      *LogConfig      `mapstructure:"log"`
 	PostgresConfig *PostgresConfig `mapstructure:"postgres"`
-	RedisConfig    *RedisConfig    `mapstructure:"redis"`
 }
 
 type UrlConfig struct {
-	PointSystem string `mapstructure:"point_system"`
-}
-
-type AuthConfig struct {
-	JwtExpire int `mapstructure:"jwt_expire"`
+	JanctionBackend string `mapstructure:"janction_backend"`
 }
 
 type LogConfig struct {
@@ -47,15 +41,6 @@ type PostgresConfig struct {
 	Port         int    `mapstructure:"port"`
 	MaxOpenConns int    `mapstructure:"max_open_conns"`
 	MaxIdleConns int    `mapstructure:"max_idle_conns"`
-}
-
-type RedisConfig struct {
-	Host         string `mapstructure:"host"`
-	Password     string `mapstructure:"password"`
-	Port         int    `mapstructure:"port"`
-	DB           int    `mapstructure:"db"`
-	PoolSize     int    `mapstructure:"pool_size"`
-	MinIdleConns int    `mapstructure:"min_idle_conns"`
 }
 
 var Config = new(AppConfig)

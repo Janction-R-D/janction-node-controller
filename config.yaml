@@ -1,6 +1,6 @@
 name: "Janction Controller"
 mode: "dev"
-port: 8767
+port: 7767
 version: "v1.0.0"
 start_time: "2024-07-01"
 machine_id: 1

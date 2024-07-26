@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"fmt"
+	"janction/model"
 	"janction/setting"
 
 	"gorm.io/driver/postgres"
@@ -38,7 +39,7 @@ func Init(cfg *setting.PostgresConfig) (err error) {
 	}
 
 	if err = db.AutoMigrate(
-
+		&model.NodeRegistration{},
 	); err != nil {
 		return err
 	}

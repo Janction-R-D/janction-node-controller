@@ -1,16 +1,12 @@
-name: "Janction Backend"
+name: "Janction Controller"
 mode: "dev"
-port: 8767
+port: 7767
 version: "v1.0.0"
-start_time: "2024-05-01"
+start_time: "2024-07-01"
 machine_id: 1
 
 url:
-  point_system: "http://127.0.0.1:9767/api/point/v1"
-
-auth:
-  administrator: "0x13a6D1fe418de7e5B03Fb4a15352DfeA3249eAA4"
-  jwt_expire: 8760
+  janction_backend: "http://127.0.0.1:9767/api/point/v1"
 
 log:
   level: "debug"
@@ -28,10 +24,3 @@ postgres:
   schema: "public"
   max_open_conns: 200
   max_idle_conns: 50
-
-redis:
-  host: "127.0.0.1"
-  port: "6379"
-  password: ""
-  db: 0
-  pool_size: 100
