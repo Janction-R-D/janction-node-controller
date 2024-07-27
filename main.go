@@ -7,6 +7,7 @@ import (
 	"janction/pkg/snowflake"
 	"janction/router"
 	"janction/setting"
+	"janction/ticker"
 
 	"go.uber.org/zap"
 )
@@ -36,6 +37,8 @@ func main() {
 		return
 	}
 	defer postgres.Close()
+
+	go ticker.FetchJobTicker()
 
 	r := router.SetupRouter()
 	if err := r.Run(fmt.Sprintf(":%d", setting.Config.Port)); err != nil {

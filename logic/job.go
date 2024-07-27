@@ -2,9 +2,7 @@ package logic
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
-	"janction/dao/postgres"
 	"janction/model"
 	"janction/setting"
 	"net/http"
@@ -16,51 +14,50 @@ import (
 )
 
 var (
-	jobStore   = make(map[string][]string)
+	jobStore   = make([]string, 0, 100)
 	jobStoreMu sync.Mutex
 )
 
-// GetJob retrieves a job for the given nodeID
+// GetJob retrieves a job
 func GetJob(nodeID string) (*string, error) {
 	jobStoreMu.Lock()
 	defer jobStoreMu.Unlock()
 
-	// Check if there are jobs available for the given nodeID
-	if jobs, exists := jobStore[nodeID]; exists && len(jobs) > 0 {
+	// Check if there are jobs available
+	if len(jobStore) > 0 {
 		// Pop the job from the head of the array
-		job := jobs[0]
-		jobStore[nodeID] = jobs[1:]
+		job := jobStore[0]
+		jobStore = jobStore[1:]
 		return &job, nil
 	}
 
-	// If jobs are less than 100, fetch new jobs from the backend
-	if jobs, exists := jobStore[nodeID]; !exists || len(jobs) < 100 {
-		nodeRegistration, err := postgres.GetNodeRegistrationByNodeID(nodeID);
-		if err != nil {
-			return nil, err
-		}
-		params := model.FormGetJobType{
-			Architecture: nodeRegistration.ArchitectureType,
-			UseCPU: nodeRegistration.UseCPU,
-			UseGPU: nodeRegistration.UseGPU,
-		}
-		newJob, err := fetchJobType(params)
-		if err != nil {
-			return nil, err
-		}
+	return nil, nil
+}
 
-		// Append the new jobs to the existing jobs
-		jobStore[nodeID] = append(jobStore[nodeID], *newJob)
+// FetchJob fetches jobs from the backend and fills the jobStore
+func FetchJob() error {
+	if len(jobStore) == 100 {
+		return nil
+	}
+	
+	params := model.FormGetJobType{
+		Architecture: "amd64",
+		UseCPU:       1,
+		UseGPU:       0,
+	}
+	newJob, err := fetchJobType(params)
+	if err != nil {
+		return err
 	}
 
-	// Check again if jobs are available after fetching
-	if jobs, exists := jobStore[nodeID]; exists && len(jobs) > 0 {
-		job := jobs[0]
-		jobStore[nodeID] = jobs[1:]
-		return &job, nil
-	}
+	jobStoreMu.Lock()
+	defer jobStoreMu.Unlock()
 
-	return nil, errors.New("no jobs available")
+	if len(jobStore) < 100 {
+		jobStore = append(jobStore, *newJob)
+	} 
+
+	return nil
 }
 
 // fetchJobType sends a request to the backend to fetch job types
