@@ -62,10 +62,10 @@ func FetchJob() error {
 
 // fetchJobType sends a request to the backend to fetch job types
 func fetchJobType(params model.FormGetJobType) (*string, error) {
-	baseURL := setting.Config.UrlConfig.JanctionBackend
+	target := setting.Config.UrlConfig.JanctionBackend + "/node/job_type"
 
 	// Construct the request URL with query parameters
-	reqURL, err := url.Parse(baseURL)
+	reqURL, err := url.Parse(target)
 	if err != nil {
 		zap.L().Error("Failed to parse base URL", zap.Error(err))
 		return nil, err
