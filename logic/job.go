@@ -67,7 +67,7 @@ func fetchJobType(params model.FormGetJobType) (*string, error) {
 	// Construct the request URL with query parameters
 	reqURL, err := url.Parse(target)
 	if err != nil {
-		zap.L().Error("Failed to parse base URL", zap.Error(err))
+		zap.L().Error("Failed to parse target URL", zap.Error(err))
 		return nil, err
 	}
 
@@ -77,13 +77,30 @@ func fetchJobType(params model.FormGetJobType) (*string, error) {
 	query.Set("use_cpu", fmt.Sprintf("%d", params.UseCPU))
 	reqURL.RawQuery = query.Encode()
 
+	// Get the JWT token
+	token, err := GetTokenOrLogin()
+	if err != nil {
+		zap.L().Error("Failed to get token", zap.Error(err))
+		return nil, err
+	}
+
+	// Create a new HTTP request
+	req, err := http.NewRequest("GET", reqURL.String(), nil)
+	if err != nil {
+		zap.L().Error("Failed to create HTTP request", zap.Error(err))
+		return nil, err
+	}
+
+	// Add Authorization header with the JWT token
+	req.Header.Add("Authorization", "Bearer "+ *token)
+
 	// Create a new HTTP client and set a timeout
 	client := &http.Client{
 		Timeout: 10 * time.Second,
 	}
 
-	// Make the GET request
-	resp, err := client.Get(reqURL.String())
+	// Make the request
+	resp, err := client.Do(req)
 	if err != nil {
 		zap.L().Error("Failed to fetch job type", zap.Error(err))
 		return nil, err
@@ -91,9 +108,9 @@ func fetchJobType(params model.FormGetJobType) (*string, error) {
 	defer resp.Body.Close()
 
 	var response struct {
-		Code int         `json:"code"`
-		Msg  string      `json:"msg"`
-		Data interface{} `json:"data"`
+		Code int    `json:"code"`
+		Msg  string `json:"msg"`
+		Data string `json:"data"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
@@ -104,7 +121,5 @@ func fetchJobType(params model.FormGetJobType) (*string, error) {
 		return nil, fmt.Errorf("request failed: %s", response.Msg)
 	}
 
-	jobType := response.Data.(string)
-
-	return &jobType, nil
+	return &response.Data, nil
 }

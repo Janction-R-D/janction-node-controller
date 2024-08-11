@@ -39,6 +39,7 @@ func Init(cfg *setting.PostgresConfig) (err error) {
 	}
 
 	if err = db.AutoMigrate(
+		&model.JWT{},
 		&model.NodeRegistration{},
 	); err != nil {
 		return err

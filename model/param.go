@@ -22,4 +22,18 @@ type FormGetJobType struct {
 	UseCPU       int    `json:"use_cpu"`      // 0 , 1 cpu available
 }
 
+type RespGetNonce struct {
+	Nonce string `json:"nonce"`
+}
+
+type ReqLogin struct {
+	Message   string `json:"message"`
+	Signature string `json:"signature"`
+	IsNode    bool   `json:"is_node"`
+}
+
+type RespLogin struct {
+	Token string `json:"token"`
+}
+
 /********* */

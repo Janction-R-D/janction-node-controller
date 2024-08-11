@@ -20,7 +20,7 @@ postgres:
   port: "5432"
   user: ""
   password: ""
-  dbname: "janction"
+  dbname: "postgres"
   schema: "public"
   max_open_conns: 200
   max_idle_conns: 50
